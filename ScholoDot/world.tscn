@@ -1,0 +1,159 @@
+[gd_scene load_steps=26 format=3 uid="uid://b4xteutobj2cq"]
+
+[ext_resource type="Script" path="res://world.gd" id="1_ntol1"]
+[ext_resource type="PackedScene" uid="uid://t1hw12nblgho" path="res://Characters/Player/player.tscn" id="1_omwj2"]
+[ext_resource type="PackedScene" uid="uid://7t5m7f1cuonc" path="res://Inventory/inventory.tscn" id="2_xlnyd"]
+[ext_resource type="Script" path="res://Inventory/Inventory_data_equip.gd" id="3_7kppn"]
+[ext_resource type="Script" path="res://Inventory/Inventory_interface.gd" id="3_jcba2"]
+[ext_resource type="PackedScene" uid="uid://krowf1kg0elx" path="res://Inventory/slot.tscn" id="5_5hatu"]
+[ext_resource type="PackedScene" uid="uid://dvxx0101a7d6q" path="res://Interactable/chest.tscn" id="6_73cfk"]
+[ext_resource type="PackedScene" uid="uid://dpcebcmfxtlvh" path="res://Inventory/hot_bar_inventory.tscn" id="6_iyuek"]
+[ext_resource type="Script" path="res://Inventory/Inventory_data.gd" id="7_wwvc0"]
+[ext_resource type="Resource" uid="uid://u07dn3drd2ie" path="res://Item/Items/book.tres" id="8_yhu4r"]
+[ext_resource type="Script" path="res://Inventory/Slot_data.gd" id="9_hmsdj"]
+[ext_resource type="PackedScene" uid="uid://tj5eg2r2djrc" path="res://Item/PickUp/pick_up.tscn" id="10_mcqho"]
+[ext_resource type="Resource" uid="uid://hkupkbphbclo" path="res://Item/Items/apple.tres" id="11_bum4t"]
+[ext_resource type="Script" path="res://Characters/Character.gd" id="14_muwv7"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_2vopu"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_atsyt"]
+sky_material = SubResource("ProceduralSkyMaterial_2vopu")
+
+[sub_resource type="Environment" id="Environment_5na7b"]
+background_mode = 2
+sky = SubResource("Sky_atsyt")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="Resource" id="Resource_n7pu3"]
+script = ExtResource("3_7kppn")
+slot_datas = Array[ExtResource("9_hmsdj")]([null, null, null, null, null, null])
+
+[sub_resource type="Resource" id="Resource_b7tcg"]
+script = ExtResource("9_hmsdj")
+item_data = ExtResource("8_yhu4r")
+quantity = 1
+
+[sub_resource type="Resource" id="Resource_i3oik"]
+script = ExtResource("7_wwvc0")
+slot_datas = Array[ExtResource("9_hmsdj")]([SubResource("Resource_b7tcg"), null, null, null, null])
+
+[sub_resource type="Resource" id="Resource_o5w12"]
+script = ExtResource("9_hmsdj")
+item_data = ExtResource("11_bum4t")
+quantity = 21
+
+[sub_resource type="BoxMesh" id="BoxMesh_sf3jb"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_ji5hh"]
+points = PackedVector3Array(-0.5, -0.5, -0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, 0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, 0.5, -0.5, 0.5, -0.5)
+
+[sub_resource type="BoxMesh" id="BoxMesh_x5jma"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_115ws"]
+
+[node name="WorldScene" type="Node3D"]
+script = ExtResource("1_ntol1")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_5na7b")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Player" parent="." instance=ExtResource("1_omwj2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.421, 0, 3.79986)
+equip_inventory_data = SubResource("Resource_n7pu3")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." groups=["Floor"]]
+transform = Transform3D(20, 0, 0, 0, 1, 0, 0, 0, 20, 0, -0.5, 0)
+use_collision = true
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="." groups=["Floor"]]
+transform = Transform3D(20, 0, 0, 0, 1, 0, 0, 0, 20, 0, 1.91338, -9.99669)
+use_collision = true
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="InventoryInterface" type="Control" parent="UI"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_jcba2")
+metadata/_edit_use_anchors_ = true
+
+[node name="PlayerInventory" parent="UI/InventoryInterface" instance=ExtResource("2_xlnyd")]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 50.0
+offset_bottom = 50.0
+
+[node name="EquipInventory" parent="UI/InventoryInterface" instance=ExtResource("2_xlnyd")]
+layout_mode = 0
+offset_left = 450.0
+offset_top = 10.0
+offset_right = 490.0
+offset_bottom = 50.0
+
+[node name="ExternalInventory" parent="UI/InventoryInterface" instance=ExtResource("2_xlnyd")]
+visible = false
+layout_mode = 0
+offset_left = 695.0
+offset_top = 220.0
+offset_right = 735.0
+offset_bottom = 260.0
+
+[node name="GrabbedSlot" parent="UI/InventoryInterface" instance=ExtResource("5_5hatu")]
+visible = false
+modulate = Color(1, 1, 1, 0.490196)
+self_modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+offset_right = 64.0
+offset_bottom = 64.0
+
+[node name="HotBarInventory" parent="UI" instance=ExtResource("6_iyuek")]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 50.0
+offset_bottom = 50.0
+
+[node name="Chest" parent="." instance=ExtResource("6_73cfk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.42992, 0, 2.52334)
+inventory_data = SubResource("Resource_i3oik")
+
+[node name="PickUp" parent="." instance=ExtResource("10_mcqho")]
+transform = Transform3D(-0.0776934, 0, 0.996977, 0, 1, 0, -0.996977, 0, -0.0776934, -6.37785, 1.36757, 2.59284)
+slot_data = SubResource("Resource_o5w12")
+
+[node name="GrabBody" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.97438, 6.90498)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="GrabBody"]
+mesh = SubResource("BoxMesh_sf3jb")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="GrabBody"]
+shape = SubResource("ConvexPolygonShape3D_ji5hh")
+
+[node name="RigidBody3D" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.30879, 0.973551, 2.23832)
+script = ExtResource("14_muwv7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
+mesh = SubResource("BoxMesh_x5jma")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
+shape = SubResource("BoxShape3D_115ws")
+
+[connection signal="drop_slot_data" from="UI/InventoryInterface" to="." method="_on_inventory_interface_drop_slot_data"]
+[connection signal="gui_input" from="UI/InventoryInterface" to="UI/InventoryInterface" method="_on_gui_input"]
+[connection signal="visibility_changed" from="UI/InventoryInterface" to="UI/InventoryInterface" method="_on_visibility_changed"]
+[connection signal="body_entered" from="RigidBody3D" to="RigidBody3D" method="_on_body_entered"]
